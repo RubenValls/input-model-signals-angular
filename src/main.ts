@@ -1,4 +1,4 @@
-import { Component, effect, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { HijoComponent } from './components/child.component';
 
@@ -9,7 +9,7 @@ import { HijoComponent } from './components/child.component';
   template: `
     <button (click)="reset()">Reset</button>
     <hr/>
-    <app-hijo [(data)]="mensajeModificadoHijo" [boton]="mensajeBotonSinModificar()"></app-hijo>
+    <app-hijo [(data)]="mensajeModificadoHijo" [boton]="mensajeBotonSinModificar()" (dataChange)="handlerDataChange()"></app-hijo>
   `,
 })
 export class App {
@@ -17,14 +17,14 @@ export class App {
   mensajeModificadoHijo = signal('Hola desde el padre');
   mensajeBotonSinModificar = signal('Modifica el padre desde el hijo');
 
-  constructor() {
-    // Efecto que escucha cambios en la signal del hijo
-    effect(() => {
-      console.log('Mensaje del hijo:', this.mensajeModificadoHijo());
-    });
+  public handlerDataChange(): void {
+    this.mensajeBotonSinModificar.set(
+      'Ya has modificado el valor desde el hijo'
+    );
   }
 
   public reset(): void {
+    this.mensajeBotonSinModificar.set('Modifica el padre desde el hijo');
     this.mensajeModificadoHijo.set('Hola desde el padre');
   }
 }
